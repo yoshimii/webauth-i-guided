@@ -2,6 +2,8 @@ const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
 
+const bcrypt = require('bcrypt');
+
 const db = require('./database/dbConfig.js');
 const Users = require('./users/users-model.js');
 
@@ -18,6 +20,8 @@ server.get('/', (req, res) => {
 server.post('/api/register', (req, res) => {
   let user = req.body;
 
+  const hash = bcrypt.hashSync(user.password, 12)
+  user.password = hash;
   Users.add(user)
     .then(saved => {
       res.status(201).json(saved);
